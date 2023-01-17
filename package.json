@@ -1,6 +1,6 @@
 {
 	"name": "@ouroboros/browser",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Package to handle common browser functionality.",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -19,6 +19,7 @@
 		"clipboard",
 		"cookies",
 		"hash",
+		"local storage",
 		"page visibility"
 	],
 	"author": "Chris Nasr <chris@ouroboroscoding.com>",
