@@ -12,7 +12,7 @@
 import { clone, empty, isObject, parseQuery } from '@ouroboros/tools';
 
 // Callback type
-type Callback = (value: string | null) => {};
+type Callback = (value: string | null) => void;
 
 // name regex
 const nameRE = /^[a-zA-Z_]+$/;
