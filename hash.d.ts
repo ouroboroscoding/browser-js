@@ -7,7 +7,7 @@
  * @copyright Ouroboros Coding Inc.
  * @created 2018-12-09
  */
-type Callback = (value: string | null) => {};
+type Callback = (value: string | null) => void;
 /**
  * Init
  *
