@@ -67,20 +67,28 @@ function remove(name, domain, path) {
  * @return {void}
  */
 function set(name, value, expires, domain, path) {
-    // Generate the expires time
-    const d = new Date();
-    d.setTime(d.getTime() + (expires * 1000));
-    // Generate the cookie string
-    let s = name + '=' + encodeURIComponent(value) +
-        '; expires=' + d.toUTCString() + ';';
+    // Init the sections with the name and value
+    const lSections = [
+        `${name}=${encodeURIComponent(value)}`
+    ];
+    // If we have an expires
+    if (expires) {
+        // Generate the expires time
+        const d = new Date();
+        d.setTime(d.getTime() + (expires * 1000));
+        // Add it to the sections
+        lSections.push(`expires=${d.toUTCString()}`);
+    }
+    // If we have a domain
     if (domain) {
-        s += ' domain=' + domain + ';';
+        lSections.push(`domain=${domain}`);
     }
+    // If we have a path
     if (path) {
-        s += ' path=' + path + ';';
+        lSections.push(`path=${path}`);
     }
-    // Set the cookie
-    document.cookie = s;
+    // Set the cookie by combining the sections
+    document.cookie = lSections.join('; ');
 }
 // Default export
 const cookies = { get, remove, set };

@@ -8,7 +8,8 @@
  * @created 2018-12-09
  */
 // Generic modules
-import { clone, empty, isObject, parseQuery } from '@ouroboros/tools';
+import clone from '@ouroboros/clone';
+import { empty, isObject, parseQuery } from '@ouroboros/tools';
 // name regex
 const nameRE = /^[a-zA-Z_]+$/;
 // Callbacks
