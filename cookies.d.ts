@@ -46,7 +46,7 @@ declare function remove(name: string, domain?: string, path?: string): void;
  * @param {string?} path The optional path of the cookie
  * @return {void}
  */
-declare function set(name: string, value: string, expires: number, domain?: string, path?: string): void;
+declare function set(name: string, value: string, expires?: number, domain?: string, path?: string): void;
 declare const cookies: {
     get: typeof get;
     remove: typeof remove;

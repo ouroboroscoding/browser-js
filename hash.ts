@@ -9,7 +9,8 @@
  */
 
 // Generic modules
-import { clone, empty, isObject, parseQuery } from '@ouroboros/tools';
+import clone from '@ouroboros/clone';
+import { empty, isObject, parseQuery } from '@ouroboros/tools';
 
 // Callback type
 type Callback = (value: string | null) => void;

@@ -73,24 +73,36 @@ function remove(name: string, domain?: string, path?: string): void {
  * @param {string?} path The optional path of the cookie
  * @return {void}
  */
-function set(name: string, value: string, expires: number, domain?: string, path?: string): void {
+function set(name: string, value: string, expires?: number, domain?: string, path?: string): void {
 
-	// Generate the expires time
-	const d = new Date();
-	d.setTime(d.getTime() + (expires*1000))
+	// Init the sections with the name and value
+	const lSections = [
+		`${name}=${encodeURIComponent(value)}`
+	];
 
-	// Generate the cookie string
-	let s = name + '=' + encodeURIComponent(value) +
-			'; expires=' + d.toUTCString() + ';';
+	// If we have an expires
+	if(expires) {
+
+		// Generate the expires time
+		const d = new Date();
+		d.setTime(d.getTime() + (expires * 1000))
+
+		// Add it to the sections
+		lSections.push(`expires=${d.toUTCString()}`);
+	}
+
+	// If we have a domain
 	if(domain) {
-		s += ' domain=' + domain + ';';
-	}
-	if(path) {
-		s += ' path=' + path + ';';
+		lSections.push(`domain=${domain}`);
 	}
 
-	// Set the cookie
-	document.cookie = s;
+	// If we have a path
+	if(path) {
+		lSections.push(`path=${path}`);
+	}
+
+	// Set the cookie by combining the sections
+	document.cookie = lSections.join('; ');
 }
 
 // Default export
