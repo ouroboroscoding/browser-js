@@ -1,6 +1,6 @@
 {
 	"name": "@ouroboros/browser",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "Package to handle common browser functionality.",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -33,7 +33,7 @@
 		"typescript": "^4.8.3"
 	},
 	"dependencies": {
-		"@ouroboros/clone": "^1.0.0",
-		"@ouroboros/tools": "^0.4.0"
+		"@ouroboros/clone": "^1.0.1",
+		"@ouroboros/tools": "^0.4.1"
 	}
 }
