@@ -50,7 +50,7 @@ function get(name, defaulReturn) {
  * @return {void}
  */
 function remove(name, domain, path) {
-    set(name, '', -1, domain, path);
+    set(name, '', -86400, domain, path);
 }
 /**
  * Set
