@@ -56,7 +56,7 @@ function get(name: string, defaulReturn: string | null | undefined): string | ob
  * @return {void}
  */
 function remove(name: string, domain?: string, path?: string): void {
-	set(name, '', -1, domain, path);
+	set(name, '', -86400, domain, path);
 }
 
 /**
