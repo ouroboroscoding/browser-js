@@ -16,25 +16,25 @@
  *
  * @name bool
  * @access public
- * @param {string} name The name of the local var to fetch
- * @param {string} defaultReturn The value to return if the var is not found
- * @return {boolean}
+ * @param name The name of the local var to fetch
+ * @param defaultReturn The value to return if the var is not found
+ * @returns The boolean value found in storage
  */
 export function bool(name, defaultReturn = false) {
     const value = localStorage.getItem(name);
     return value === null ? defaultReturn : (value === '' ? false : true);
 }
 /**
- * json
+ * JSON
  *
  * Fetches a value from local storage or returns the default if no value is
  * found. Assumes data is stored in JSON
  *
  * @name json
  * @access public
- * @param {string} name The name of the local var to fetch
- * @param {string} defaultReturn The value to return if the var is not found
- * @return {any}
+ * @param name The name of the local var to fetch
+ * @param defaultReturn The value to return if the var is not found
+ * @returns The object or other JS value found in storage
  */
 export function json(name, defaultReturn) {
     const value = localStorage.getItem(name);
@@ -48,9 +48,9 @@ export function json(name, defaultReturn) {
  *
  * @name string
  * @access public
- * @param {string} name The name of the local var to fetch
- * @param {string} defaultReturn The value to return if the var is not found
- * @return {string}
+ * @param name The name of the local var to fetch
+ * @param defaultReturn The value to return if the var is not found
+ * @returns The string found in storage
  */
 export function string(name, defaultReturn) {
     const value = localStorage.getItem(name);
