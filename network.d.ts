@@ -1,30 +1,30 @@
 /**
- * Page Visibility
+ * Network
  *
- * Library/Namespace containing various functions to track page visibility
+ * Tracks whether the browser is online / offline
  *
  * @author Chris Nasr <chris@ouroboroscoding.com>
  * @copyright Ouroboros Coding Inc.
- * @created 2018-08-01
+ * @created 2024-04-09
  */
 import Subscribe, { SubscribeCallback, SubscribeReturn } from '@ouroboros/subscribe';
 /**
- * Page Visibility
+ * Network
  *
  * Extends the Subscribe class to be created once and exported
  *
- * @name PageVisibility
+ * @name Network
  * @extends Subscribe
  */
-declare class PageVisibility extends Subscribe {
+declare class Network extends Subscribe {
     /**
      * Constructor
      *
      * Creates a new instance and returns it
      *
-     * @name PageVisibility
+     * @name Network
      * @access private
-     * @returns PageVisibility
+     * @returns Network
      */
     constructor();
     /**
@@ -50,5 +50,5 @@ declare class PageVisibility extends Subscribe {
      */
     unsubscribe(callback: SubscribeCallback): boolean;
 }
-declare const pageVisibility: PageVisibility;
-export default pageVisibility;
+declare const network: Network;
+export default network;

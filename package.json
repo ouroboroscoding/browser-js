@@ -1,12 +1,13 @@
 {
 	"name": "@ouroboros/browser",
-	"version": "0.1.7",
+	"version": "0.2.0",
 	"description": "Package to handle common browser functionality.",
 	"main": "index.js",
 	"types": "index.d.ts",
 	"scripts": {
 		"build": "tslint -p tsconfig.json && tsc",
 		"clean": "rm *.js *.d.ts",
+		"for_local": "npm install; tslint -p tsconfig.json && tsc; rm -Rf node_modules",
 		"test": "echo \"Error: no test specified.\" && exit 1"
 	},
 	"repository": {
@@ -20,6 +21,7 @@
 		"cookies",
 		"hash",
 		"local storage",
+		"network",
 		"page visibility"
 	],
 	"author": "Chris Nasr <chris@ouroboroscoding.com>",
@@ -34,6 +36,7 @@
 	},
 	"dependencies": {
 		"@ouroboros/clone": "^1.0.1",
-		"@ouroboros/tools": "^0.4.1"
+		"@ouroboros/subscribe": "^1.2.2",
+		"@ouroboros/tools": "^0.5.3"
 	}
 }

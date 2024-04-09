@@ -8,37 +8,38 @@
  * @created 2018-08-01
  */
 
-// Callback type
-type Callback = (...args: any[]) => {};
+// Ouroboros modules
+import Subscribe, {
+	SubscribeCallback,
+	SubscribeReturn
+} from '@ouroboros/subscribe';
 
 // Init the visibility property name and event values
-let bVis = false;
-const dVis = {
+let apiAvailable = false;
+const properties = {
 	property: 'hidden',
 	event: 'visibilitychange',
 	state: 'visibilityState'
 };
-const lCallbacks: Callback[] = []
 
-// Figure out the name of the visibility property and event
 // Valid browser prefixes
-const lPrefixes = ['moz', 'ms', 'o', 'webkit'];
+const prefixes = ['moz', 'ms', 'o', 'webkit'];
 
-// If a prefix is required
+// If a prefix is not required
 if('hidden' in document) {
-	bVis = true;
+	apiAvailable = true;
 }
 
 // Else, loop through the prefixes
 else {
-	for(const prefix of lPrefixes) {
+	for(const prefix of prefixes) {
 
 		// If the prefixes version exists
 		if((prefix + 'Hidden') in document) {
-			dVis.property = prefix + 'Hidden';
-			dVis.event = prefix + 'visibilitychange';
-			dVis.state = prefix + 'VisibilityState';
-			bVis = true;
+			properties.property = prefix + 'Hidden';
+			properties.event = prefix + 'visibilitychange';
+			properties.state = prefix + 'VisibilityState';
+			apiAvailable = true;
 			break;
 		}
 	}
@@ -47,110 +48,105 @@ else {
 /**
  * Track
  *
- * The actual function passed to the event so that we only have one event listener
+ * The actual function passed to the event so that we only have one event
+ * listener
  *
  * @name track
  * @access private
- * @return {void}
  */
 function track(): void {
 
-	// Call the callbacks and pass them bool and state values
-	for(const f of lCallbacks) {
-		f(document[dVis.property as keyof Document], document[dVis.state as keyof Document]);
-	}
+	// Set the data so the instance notifies subscribers
+	pageVisibility.set({
+		property: document[properties.property as keyof Document],
+		state: document[properties.state as keyof Document]
+	});
 }
 
 /**
- * Get
+ * Page Visibility
  *
- * Returns the current state of visibility
+ * Extends the Subscribe class to be created once and exported
  *
- * @name get
- * @access public
- * @return {object | false}
+ * @name PageVisibility
+ * @extends Subscribe
  */
-export function get(): object | false {
+class PageVisibility extends Subscribe {
 
-	// If the library is available
-	if(bVis) {
-		return {
-			property: document[dVis.property as keyof Document],
-			state: document[dVis.state as keyof Document]
+	/**
+	 * Constructor
+	 *
+	 * Creates a new instance and returns it
+	 *
+	 * @name PageVisibility
+	 * @access private
+	 * @returns PageVisibility
+	 */
+	constructor() {
+
+		// Get the current values and init the instance with them
+		super(apiAvailable ? {
+			property: document[properties.property as keyof Document],
+			state: document[properties.state as keyof Document]
+		} : null);
+	}
+
+	/**
+	 * Subscribe
+	 *
+	 * Overrides parent subscribe to handle adding the window event
+	 *
+	 * @name subscribe
+	 * @access public
+	 * @param callback The function to call when the state changes
+	 * @returns object
+	 */
+	subscribe(callback: SubscribeCallback): SubscribeReturn {
+
+		// If we have no current subscribers
+		if(apiAvailable && this.subscribeCallbacks.length === 0) {
+
+			// Add the event listener
+			document.addEventListener(properties.event, track);
 		}
-	} else {
-		console.error('Page Visibility API not available');
-		return false;
-	}
-}
 
-/**
- * Subscribe
- *
- * Track changes on page visibility
- *
- * @name subscribe
- * @access public
- * @param {function} callback Function to call on visibility changes
- * @return {boolean}
- */
-export function subscribe(callback: Callback): boolean {
-
-	// If the Page Visibility  API is not available
-	if(bVis === false) {
-		console.error('Page Visibility API not available');
-		return false;
+		// Call the parent subscribe and return
+		return super.subscribe(callback);
 	}
 
-	// Save the callback for later
-	lCallbacks.push(callback);
+	/**
+	 * Unsubscribe
+	 *
+	 * Overrides parent unsubscribe to handle removing the window event
+	 *
+	 * @name unsubscribe
+	 * @access public
+	 * @param callback The callback to remove from the list
+	 * @returns boolean
+	 */
+	unsubscribe(callback: SubscribeCallback): boolean {
 
-	// Attach an event listener if this is our first event
-	if(lCallbacks.length === 1) {
-		document.addEventListener(dVis.event, track);
-	}
-
-	// Return ok
-	return true;
-}
-
-/**
- * Ubsubscribe
- *
- * Stop tracking changes in page visibility
- *
- * @name unsubscribe
- * @access public
- * @param {function} callback
- * @return {boolean}
- */
-export function unsubscribe(callback: Callback): boolean {
-
-	// If the Page Visibility  API is not available
-	if(bVis === false) {
-		console.error('Page Visibility API not available');
-		return false;
-	}
-
-	// Find the index of the callback
-	const iIndex = lCallbacks.indexOf(callback);
-
-	// If it exists
-	if(iIndex > -1) {
-
-		// Remove the callback
-		lCallbacks.splice(iIndex, 1);
-
-		// Remove event listener if we have no more callbacks
-		if(lCallbacks.length === 0) {
-			document.removeEventListener(dVis.event, track);
+		// If there's no API
+		if(!apiAvailable) {
+			return false;
 		}
-	}
 
-	// Return ok
-	return true;
+		// Call the parent unsubscribe
+		const bRet = super.unsubscribe(callback);
+
+		// If it was successful and we have no more callbacks
+		if(bRet && this.subscribeCallbacks.length === 0) {
+
+			// Remove the event listener
+			document.removeEventListener(properties.event, track);
+		}
+
+		// Return
+		return bRet;
+	}
 }
 
+// Create an instance of the class
+const pageVisibility = new PageVisibility();
 // Default export
-const pageVisibility = { get, subscribe, unsubscribe };
 export default pageVisibility;
