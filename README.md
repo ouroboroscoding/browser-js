@@ -48,6 +48,18 @@ or
 import { hash } from '@ouroboros/browser';
 ```
 
+Import network into your code
+
+```javascript
+import network from '@ouroboros/browser/network';
+```
+
+or
+
+```javascript
+import { network } from '@ouroboros/browser';
+```
+
 Import pageVisibility into your code
 
 ```javascript
@@ -58,4 +70,16 @@ or
 
 ```javascript
 import { pageVisibility } from '@ouroboros/browser';
+```
+
+Import safeLocalStorage into your code
+
+```javascript
+import safeLocalStorage from '@ouroboros/browser/safeLocalStorage';
+```
+
+or
+
+```javascript
+import { safeLocalStorage } from '@ouroboros/browser';
 ```
