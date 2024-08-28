@@ -173,7 +173,7 @@ function subscribe(name, callback) {
     // If we don't already have the name
     if (!(name in oSubscribe)) {
         // Create a new subscribe instance
-        oSubscribe[name] = new Subscribe();
+        oSubscribe[name] = new Subscribe(name in dHash ? dHash[name] : null);
     }
     // Add the callback and return
     return oSubscribe[name].subscribe(callback);
