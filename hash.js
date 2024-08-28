@@ -7,62 +7,55 @@
  * @copyright Ouroboros Coding Inc.
  * @created 2018-12-09
  */
-// Generic modules
-import clone from '@ouroboros/clone';
+// Ouroboros modules
+import Subscribe from '@ouroboros/subscribe';
 import { empty, isObject, parseQuery } from '@ouroboros/tools';
 // name regex
 const nameRE = /^[a-zA-Z_]+$/;
-// Callbacks
-const dCallbacks = {};
-// Values
-let dHash = {};
+// Subscribers by name
+const oSubscribe = {};
+// Hash values by name (only null for init)
+let dHash = null;
+/**
+ * Init
+ *
+ * Only called once
+ */
+if (dHash === null) {
+    // Track changes
+    window.addEventListener("hashchange", hashChanged);
+    // Parse the current location hash
+    dHash = parseQuery(window.location.hash.substring(1));
+}
 /**
  * Hash Changed
  *
  * Called when the location hash has been altered, notifies any watchers of
  * hash values changing
  *
- * @name _hashChanged
+ * @name hashChanged
  * @access private
  * @return {void}
  */
-function _hashChanged() {
+function hashChanged() {
     // Store the current hash
-    const old = clone(dHash);
+    const old = { ...dHash };
     // Re-parse the current location hash
     dHash = parseQuery(window.location.hash.substring(1));
-    // If there are dCallbacks
-    if (!empty(dCallbacks)) {
-        // Check each watch
-        for (const name in dCallbacks) {
-            // If the value didn't exist and now it does, or it did exist
-            //	and now it doesn't, or the values don't match
-            if ((!(name in old) && name in dHash) ||
-                (name in old && !(name in dHash)) ||
-                old[name] !== dHash[name]) {
-                // Go through each callback and call it
-                for (const f of dCallbacks[name]) {
-                    f(dHash[name] || null);
-                }
+    // If there are oSubscribe
+    if (!empty(oSubscribe)) {
+        // Check each subscribe instance
+        for (const name of Object.keys(oSubscribe)) {
+            // If the value no longer exists, set it to null
+            if (name in old && !(name in dHash)) {
+                oSubscribe[name].set(null);
+            }
+            // Else, the value is new, or altered, so use the new value
+            else {
+                oSubscribe[name].set(dHash[name]);
             }
         }
     }
-}
-/**
- * Init
- *
- * Initialises the internal hash by fetching and parsing the current
- * location hash
- *
- * @name init
- * @access public
- * @return {void}
- */
-function init() {
-    // Track changes
-    window.addEventListener("hashchange", _hashChanged);
-    // Parse the current location hash
-    dHash = parseQuery(window.location.hash.substring(1));
 }
 /**
  * Get
@@ -91,6 +84,20 @@ function get(name, defaultReturn) {
     }
 }
 /**
+ * Reset
+ *
+ * Notifies all existing subscriptions that all data went away
+ *
+ * @name reset
+ * @access private
+ */
+function reset() {
+    // Go through each subscribe instance
+    for (const name of Object.keys(oSubscribe)) {
+        oSubscribe[name].set(null);
+    }
+}
+/**
  * Set
  *
  * Sets a specific name
@@ -111,7 +118,7 @@ function set(name, value) {
         name = { [name]: value };
     }
     // Make a copy of the current hash
-    const copy = clone(dHash);
+    const copy = { ...dHash };
     // Go through each name
     for (const n of Object.keys(name)) {
         // If the name is invalid
@@ -131,10 +138,24 @@ function set(name, value) {
     const temp = [];
     // Go through each name
     for (const k of Object.keys(copy)) {
-        temp.push(k + '=' + copy[k]);
+        temp.push(copy[k] === '' ? k : (k + '=' + copy[k]));
     }
-    // Reset the window location hash
-    window.location.hash = temp.join('&');
+    // If we have none
+    if (temp.length === 0) {
+        // If we can use pushState
+        if ('pushState' in history) {
+            history.pushState('', document.title, window.location.pathname + window.location.search);
+            reset();
+        }
+        // Else, we can't remove the '#', but clear the rest regardless
+        else {
+            window.location.hash = '';
+        }
+    }
+    // Else, reset the window location hash
+    else {
+        window.location.hash = temp.join('&');
+    }
 }
 /**
  * Subscribe
@@ -149,27 +170,18 @@ function set(name, value) {
  * @return {void}
  */
 function subscribe(name, callback) {
-    // If we already have the name
-    if (name in dCallbacks) {
-        // Go through the callbacks associated with the name
-        for (const f of dCallbacks[name]) {
-            // If we already have the callback there's no need to store it
-            if (f === callback) {
-                return;
-            }
-        }
+    // If we don't already have the name
+    if (!(name in oSubscribe)) {
+        // Create a new subscribe instance
+        oSubscribe[name] = new Subscribe();
     }
-    // Else if we don't have any callbacks for the name
-    else {
-        dCallbacks[name] = [];
-    }
-    // Add the callback to the dCallbacks
-    dCallbacks[name].push(callback);
+    // Add the callback and return
+    return oSubscribe[name].subscribe(callback);
 }
 /**
  * Unsubscribe
  *
- * Removes a callback from the dCallbacks
+ * Removes a callback from the oSubscribe
  *
  * @name unsubscribe
  * @access public
@@ -179,18 +191,11 @@ function subscribe(name, callback) {
  */
 function unsubscribe(name, callback) {
     // If we have the name
-    if (name in dCallbacks) {
-        // Go through the callbacks associated with the name
-        for (let i = 0; i < dCallbacks[name].length; ++i) {
-            // If we find the callback
-            if (dCallbacks[name][i] === callback) {
-                // Remove it
-                dCallbacks[name].splice(i, 1);
-                return;
-            }
-        }
+    if (name in oSubscribe) {
+        // Attempt to unsubscribe
+        oSubscribe[name].unsubscribe(callback);
     }
 }
 // Default export
-const hash = { init, get, set, subscribe, unsubscribe };
+const hash = { get, set, subscribe, unsubscribe };
 export default hash;

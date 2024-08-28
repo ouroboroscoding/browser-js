@@ -7,18 +7,7 @@
  * @copyright Ouroboros Coding Inc.
  * @created 2018-12-09
  */
-type Callback = (value: string | null) => void;
-/**
- * Init
- *
- * Initialises the internal hash by fetching and parsing the current
- * location hash
- *
- * @name init
- * @access public
- * @return {void}
- */
-declare function init(): void;
+import { SubscribeCallback, SubscribeReturn } from '@ouroboros/subscribe';
 /**
  * Get
  *
@@ -55,11 +44,11 @@ declare function set(name: string | object, value?: string): void;
  * @param {function} callback The function to call when the value changes
  * @return {void}
  */
-declare function subscribe(name: string, callback: Callback): void;
+declare function subscribe(name: string, callback: SubscribeCallback): SubscribeReturn;
 /**
  * Unsubscribe
  *
- * Removes a callback from the dCallbacks
+ * Removes a callback from the oSubscribe
  *
  * @name unsubscribe
  * @access public
@@ -67,9 +56,8 @@ declare function subscribe(name: string, callback: Callback): void;
  * @param {function} callback The callback to remove
  * @return {void}
  */
-declare function unsubscribe(name: string, callback: Callback): void;
+declare function unsubscribe(name: string, callback: SubscribeCallback): void;
 declare const hash: {
-    init: typeof init;
     get: typeof get;
     set: typeof set;
     subscribe: typeof subscribe;
