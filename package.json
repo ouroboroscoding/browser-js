@@ -1,6 +1,6 @@
 {
 	"name": "@ouroboros/browser",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Package to handle common browser functionality.",
 	"main": "index.js",
 	"types": "index.d.ts",
