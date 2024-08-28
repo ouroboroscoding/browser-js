@@ -220,7 +220,9 @@ function subscribe(name: string, callback: SubscribeCallback): SubscribeReturn {
 	if(!(name in oSubscribe)) {
 
 		// Create a new subscribe instance
-		oSubscribe[name] = new Subscribe();
+		oSubscribe[name] = new Subscribe(
+			name in (dHash as HashType) ? (dHash as HashType)[name] : null
+		);
 	}
 
 	// Add the callback and return
