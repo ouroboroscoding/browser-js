@@ -8,21 +8,38 @@
  * @created 2018-12-09
  */
 
-// Generic modules
-import clone from '@ouroboros/clone';
+// Ouroboros modules
+import Subscribe, {
+	SubscribeCallback,
+	SubscribeReturn
+} from '@ouroboros/subscribe';
 import { empty, isObject, parseQuery } from '@ouroboros/tools';
 
-// Callback type
-type Callback = (value: string | null) => void;
+// Type
+type HashType = Record<string, string>;
 
 // name regex
 const nameRE = /^[a-zA-Z_]+$/;
 
-// Callbacks
-const dCallbacks: Record<string, Callback[]> = {};
+// Subscribers by name
+const oSubscribe: Record<string, Subscribe> = {};
 
-// Values
-let dHash: Record<string, string> = {};
+// Hash values by name (only null for init)
+let dHash: HashType | null = null;
+
+/**
+ * Init
+ *
+ * Only called once
+ */
+if(dHash === null) {
+
+	// Track changes
+	window.addEventListener("hashchange", hashChanged);
+
+	// Parse the current location hash
+	dHash = parseQuery(window.location.hash.substring(1));
+}
 
 /**
  * Hash Changed
@@ -30,56 +47,35 @@ let dHash: Record<string, string> = {};
  * Called when the location hash has been altered, notifies any watchers of
  * hash values changing
  *
- * @name _hashChanged
+ * @name hashChanged
  * @access private
  * @return {void}
  */
-function _hashChanged(): void {
+function hashChanged(): void {
 
 	// Store the current hash
-	const old = clone(dHash);
+	const old = { ...dHash };
 
 	// Re-parse the current location hash
 	dHash = parseQuery(window.location.hash.substring(1));
 
-	// If there are dCallbacks
-	if(!empty(dCallbacks)) {
+	// If there are oSubscribe
+	if(!empty(oSubscribe)) {
 
-		// Check each watch
-		for(const name in dCallbacks) {
+		// Check each subscribe instance
+		for(const name of Object.keys(oSubscribe)) {
 
-			// If the value didn't exist and now it does, or it did exist
-			//	and now it doesn't, or the values don't match
-			if((!(name in old) && name in dHash) ||
-				(name in old && !(name in dHash)) ||
-				old[name] !== dHash[name]) {
+			// If the value no longer exists, set it to null
+			if(name in old && !(name in dHash)) {
+				oSubscribe[name].set(null);
+			}
 
-				// Go through each callback and call it
-				for(const f of dCallbacks[name]) {
-					f(dHash[name] || null);
-				}
+			// Else, the value is new, or altered, so use the new value
+			else {
+				oSubscribe[name].set(dHash[name]);
 			}
 		}
 	}
-}
-
-/**
- * Init
- *
- * Initialises the internal hash by fetching and parsing the current
- * location hash
- *
- * @name init
- * @access public
- * @return {void}
- */
-function init(): void {
-
-	// Track changes
-	window.addEventListener("hashchange", _hashChanged);
-
-	// Parse the current location hash
-	dHash = parseQuery(window.location.hash.substring(1));
 }
 
 /**
@@ -102,13 +98,29 @@ function get(name: string, defaultReturn?: string): string | null {
 	}
 
 	// If there is a value for the name
-	if(typeof dHash[name] !== 'undefined') {
-		return dHash[name];
+	if(typeof (dHash as HashType)[name] !== 'undefined') {
+		return (dHash as HashType)[name];
 	}
 
 	// Else, return the default
 	else {
 		return defaultReturn === undefined ? null : defaultReturn;
+	}
+}
+
+/**
+ * Reset
+ *
+ * Notifies all existing subscriptions that all data went away
+ *
+ * @name reset
+ * @access private
+ */
+function reset(): void {
+
+	// Go through each subscribe instance
+	for(const name of Object.keys(oSubscribe)) {
+		oSubscribe[name].set(null);
 	}
 }
 
@@ -137,7 +149,7 @@ function set(name: string | object, value?: string) {
 	}
 
 	// Make a copy of the current hash
-	const copy = clone(dHash);
+	const copy = { ...dHash };
 
 	// Go through each name
 	for(const n of Object.keys(name)) {
@@ -162,11 +174,32 @@ function set(name: string | object, value?: string) {
 
 	// Go through each name
 	for(const k of Object.keys(copy)) {
-		temp.push(k + '=' + copy[k]);
+		temp.push(copy[k] === '' ? k : (k + '=' + copy[k]));
 	}
 
-	// Reset the window location hash
-	window.location.hash = temp.join('&');
+	// If we have none
+	if(temp.length === 0) {
+
+		// If we can use pushState
+		if('pushState' in history) {
+			history.pushState(
+				'',
+				document.title,
+				window.location.pathname + window.location.search
+			);
+			reset();
+		}
+
+		// Else, we can't remove the '#', but clear the rest regardless
+		else {
+			window.location.hash = '';
+		}
+	}
+
+	// Else, reset the window location hash
+	else {
+		window.location.hash = temp.join('&');
+	}
 }
 
 /**
@@ -181,34 +214,23 @@ function set(name: string | object, value?: string) {
  * @param {function} callback The function to call when the value changes
  * @return {void}
  */
-function subscribe(name: string, callback: Callback): void {
+function subscribe(name: string, callback: SubscribeCallback): SubscribeReturn {
 
-	// If we already have the name
-	if(name in dCallbacks) {
+	// If we don't already have the name
+	if(!(name in oSubscribe)) {
 
-		// Go through the callbacks associated with the name
-		for(const f of dCallbacks[name]) {
-
-			// If we already have the callback there's no need to store it
-			if(f === callback) {
-				return;
-			}
-		}
+		// Create a new subscribe instance
+		oSubscribe[name] = new Subscribe();
 	}
 
-	// Else if we don't have any callbacks for the name
-	else {
-		dCallbacks[name] = [];
-	}
-
-	// Add the callback to the dCallbacks
-	dCallbacks[name].push(callback);
+	// Add the callback and return
+	return oSubscribe[name].subscribe(callback);
 }
 
 /**
  * Unsubscribe
  *
- * Removes a callback from the dCallbacks
+ * Removes a callback from the oSubscribe
  *
  * @name unsubscribe
  * @access public
@@ -216,25 +238,16 @@ function subscribe(name: string, callback: Callback): void {
  * @param {function} callback The callback to remove
  * @return {void}
  */
-function unsubscribe(name: string, callback: Callback): void {
+function unsubscribe(name: string, callback: SubscribeCallback): void {
 
 	// If we have the name
-	if(name in dCallbacks) {
+	if(name in oSubscribe) {
 
-		// Go through the callbacks associated with the name
-		for(let i = 0; i < dCallbacks[name].length; ++i) {
-
-			// If we find the callback
-			if(dCallbacks[name][i] === callback) {
-
-				// Remove it
-				dCallbacks[name].splice(i, 1);
-				return;
-			}
-		}
+		// Attempt to unsubscribe
+		oSubscribe[name].unsubscribe(callback);
 	}
 }
 
 // Default export
-const hash = { init, get, set, subscribe, unsubscribe };
+const hash = { get, set, subscribe, unsubscribe };
 export default hash;
