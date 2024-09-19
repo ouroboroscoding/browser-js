@@ -5,12 +5,12 @@
 A library of classes to manage functionality in browsers.
 
 ## Installation
-npm
+
 ```bash
 npm install @ouroboros/browser
 ```
 
-## Getting Started
+## clipboard
 
 Import clipboard into your code
 
@@ -24,6 +24,10 @@ or
 import { clipboard } from '@ouroboros/browser';
 ```
 
+copy()
+
+## cookies
+
 Import Cookies into your code
 
 ```javascript
@@ -35,6 +39,10 @@ or
 ```javascript
 import { cookies } from '@ouroboros/browser';
 ```
+
+get(), remove(), set()
+
+## hash
 
 Import hash into your code
 
@@ -48,6 +56,10 @@ or
 import { hash } from '@ouroboros/browser';
 ```
 
+get(), set(), subscribe(), unsubscribe()
+
+## network
+
 Import network into your code
 
 ```javascript
@@ -59,6 +71,10 @@ or
 ```javascript
 import { network } from '@ouroboros/browser';
 ```
+
+default (network)
+
+## pageVisibility
 
 Import pageVisibility into your code
 
@@ -72,6 +88,10 @@ or
 import { pageVisibility } from '@ouroboros/browser';
 ```
 
+default (pageVisibility)
+
+## safeLocalStorage
+
 Import safeLocalStorage into your code
 
 ```javascript
@@ -83,3 +103,21 @@ or
 ```javascript
 import { safeLocalStorage } from '@ouroboros/browser';
 ```
+
+bool(), json(), string()
+
+## size
+
+Import size into your code
+
+```javascript
+import size from '@ouroboros/browser/size';
+```
+
+or
+
+```javascript
+import { size } from '@ouroboros/browser';
+```
+
+xs, sm, md, lg, xl, compare(), get(), greaterThan(), lessThan()
