@@ -1,6 +1,6 @@
 {
 	"name": "@ouroboros/browser",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Package to handle common browser functionality.",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -22,7 +22,8 @@
 		"hash",
 		"local storage",
 		"network",
-		"page visibility"
+		"page visibility",
+		"browser size"
 	],
 	"author": "Chris Nasr <chris@ouroboroscoding.com>",
 	"license": "MIT",
