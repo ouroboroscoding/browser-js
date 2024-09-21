@@ -72,7 +72,7 @@ or
 import { network } from '@ouroboros/browser';
 ```
 
-default (network)
+default (Subscribe)
 
 ## pageVisibility
 
@@ -88,7 +88,7 @@ or
 import { pageVisibility } from '@ouroboros/browser';
 ```
 
-default (pageVisibility)
+default (Subscribe)
 
 ## safeLocalStorage
 
@@ -120,4 +120,4 @@ or
 import { size } from '@ouroboros/browser';
 ```
 
-xs, sm, md, lg, xl, compare(), get(), greaterThan(), lessThan()
+size (Subscribe), compare(), greaterThan(), lessThan()
