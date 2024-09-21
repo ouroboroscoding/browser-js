@@ -7,13 +7,101 @@
  * @copyright Ouroboros Coding Inc.
  * @created 2024-09-19
  */
-export declare const xs = "xs";
-export declare const sm = "sm";
-export declare const md = "md";
-export declare const lg = "lg";
-export declare const xl = "xl";
-export type SIZE = typeof xs | typeof sm | typeof md | typeof lg | typeof xl;
+import Subscribe, { SubscribeCallback, SubscribeReturn } from '@ouroboros/subscribe';
+export type SIZE = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export declare const SIZES: Record<SIZE, number>;
+/**
+ * Size
+ *
+ * Extends the Subscribe class to be created once and exported
+ *
+ * @name Size
+ * @extends Subscribe
+ */
+declare class Size extends Subscribe {
+    _callback: () => void;
+    /**
+     * Constructor
+     *
+     * Creates a new instance and returns it
+     *
+     * @name Size
+     * @access private
+     * @returns Size
+     */
+    constructor();
+    /**
+     * Compare
+     *
+     * Calls the module's `compare` method with the current size and the
+     * `against` param.
+     *
+     * @name compare
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    compare(against: SIZE): number;
+    /**
+     * Get
+     *
+     * Returns the current size. Overrides the built in Subscribe.get to make
+     * sure we always have the latest, even if no one has ever subscribed
+     *
+     * @name get
+     * @access public
+     * @returns string
+     */
+    get(): SIZE;
+    /**
+     * Greater Than
+     *
+     * Calls the module's `greaterThan` method with the current size and the
+     * `against` param.
+     *
+     * @name greaterThan
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    greaterThan(against: SIZE): boolean;
+    /**
+     * Less Than
+     *
+     * Calls the module's `lessThan` method with the current size and the
+     * `against` param.
+     *
+     * @name lessThan
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    lessThan(against: SIZE): boolean;
+    /**
+     * Subscribe
+     *
+     * Overrides parent subscribe to handle adding the window event
+     *
+     * @name subscribe
+     * @access public
+     * @param callback The function to call when the state changes
+     * @returns object
+     */
+    subscribe(callback: SubscribeCallback): SubscribeReturn;
+    /**
+     * Unsubscribe
+     *
+     * Overrides parent unsubscribe to handle removing the window event
+     *
+     * @name unsubscribe
+     * @access public
+     * @param callback The callback to remove from the list
+     * @returns boolean
+     */
+    unsubscribe(callback: SubscribeCallback): boolean;
+}
+declare const size: Size;
+export default size;
 /**
  * Compare
  *
@@ -22,10 +110,11 @@ export declare const SIZES: Record<SIZE, number>;
  *
  * @name compare
  * @access public
- * @param against The size to compare the current size against
+ * @param a The size to compare against `b`
+ * @param b The size to compare against `a`
  * @returns -1 || 0 || 1
  */
-export declare function compare(against: SIZE): 0 | 1 | -1;
+export declare function compare(a: SIZE, b: SIZE): 0 | 1 | -1;
 /**
  * Greater Than
  *
@@ -33,10 +122,11 @@ export declare function compare(against: SIZE): 0 | 1 | -1;
  *
  * @name greaterThan
  * @access public
- * @param against The size to compare the current size against
+ * @param a The size to compare as greater than `b`
+ * @param b The size to compare against `a`
  * @returns boolean
  */
-export declare function greaterThan(against: SIZE): boolean;
+export declare function greaterThan(a: SIZE, b: SIZE): boolean;
 /**
  * Less Than
  *
@@ -44,29 +134,8 @@ export declare function greaterThan(against: SIZE): boolean;
  *
  * @name greaterThan
  * @access public
- * @param against The size to compare the current size against
+ * @param a The size to compare as less than `b`
+ * @param b The size to compare against `a`
  * @returns boolean
  */
-export declare function lessThan(against: SIZE): boolean;
-/**
- * Get
- *
- * Returns the current width type based on the current client width
- *
- * @name get
- * @access public
- * @returns The current width
- */
-export declare function get(): SIZE;
-declare const width: {
-    xs: string;
-    sm: string;
-    md: string;
-    lg: string;
-    xl: string;
-    compare: typeof compare;
-    greaterThan: typeof greaterThan;
-    lessThan: typeof lessThan;
-    get: typeof get;
-};
-export default width;
+export declare function lessThan(a: SIZE, b: SIZE): boolean;
