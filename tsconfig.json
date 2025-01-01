@@ -8,7 +8,7 @@
 		"lib": ["es2019", "dom", "dom.iterable"],
 		"moduleResolution": "node",
 		"noEmit": false,
-		"outDir": "build",
+		"outDir": ".",
 		"strict": true,
 		"target": "esnext"
 	},
