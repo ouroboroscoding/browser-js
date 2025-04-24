@@ -1,5 +1,4 @@
 # @ouroboros/browser
-
 [![npm version](https://img.shields.io/npm/v/@ouroboros/browser.svg)](https://www.npmjs.com/package/@ouroboros/browser) ![MIT License](https://img.shields.io/npm/l/@ouroboros/browser.svg)
 
 A library of classes to manage functionality in browsers.
@@ -24,7 +23,7 @@ or
 import { clipboard } from '@ouroboros/browser';
 ```
 
-copy()
+`clipboard.copy()`
 
 ## cookies
 
@@ -40,7 +39,23 @@ or
 import { cookies } from '@ouroboros/browser';
 ```
 
-get(), remove(), set()
+`get()`, `remove()`, `set()`
+
+## devices
+
+Import Devices into your code
+
+```javascript
+import devices, { hasPointer } from '@ouroboros/browser/devices';
+```
+
+or
+
+```javascript
+import { devices } from '@ouroboros/browser';
+```
+
+`devices.hasPointer()`
 
 ## hash
 
@@ -56,7 +71,7 @@ or
 import { hash } from '@ouroboros/browser';
 ```
 
-get(), set(), subscribe(), unsubscribe()
+`hash.get()`, `hash.set()`, `hash.subscribe()`, `hash.unsubscribe()`
 
 ## network
 
@@ -72,7 +87,7 @@ or
 import { network } from '@ouroboros/browser';
 ```
 
-default (Subscribe)
+default (`Subscribe`)
 
 ## pageVisibility
 
@@ -88,7 +103,7 @@ or
 import { pageVisibility } from '@ouroboros/browser';
 ```
 
-default (Subscribe)
+default (`Subscribe`)
 
 ## safeLocalStorage
 
@@ -104,7 +119,7 @@ or
 import { safeLocalStorage } from '@ouroboros/browser';
 ```
 
-bool(), json(), string()
+`safeLocalStorage.bool()`, `safeLocalStorage.json()`, `safeLocalStorage.string()`
 
 ## size
 
@@ -120,4 +135,4 @@ or
 import { size } from '@ouroboros/browser';
 ```
 
-size (Subscribe), compare(), greaterThan(), lessThan()
+default (`Subscribe`), `size.compare()`, `size.greaterThan()`, `size.lessThan()`
