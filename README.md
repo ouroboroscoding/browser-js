@@ -46,7 +46,7 @@ import { cookies } from '@ouroboros/browser';
 Import Devices into your code
 
 ```javascript
-import devices, { hasPointer } from '@ouroboros/browser/devices';
+import devices, { hasPointer, isMobile } from '@ouroboros/browser/devices';
 ```
 
 or
