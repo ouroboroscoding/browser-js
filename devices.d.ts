@@ -17,7 +17,19 @@
  * @returns bool
  */
 export declare function hasPointer(): boolean;
+/**
+ * Is Mobile
+ *
+ * Returns true only if the device appears to be a mobile device, but does not
+ * gaurantee anything.
+ *
+ * @name isMobile
+ * @access public
+ * @returns bool
+ */
+export declare function isMobile(): boolean;
 declare const devices: {
     hasPointer: typeof hasPointer;
+    isMobile: typeof isMobile;
 };
 export default devices;
