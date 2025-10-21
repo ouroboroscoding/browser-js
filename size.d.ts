@@ -66,6 +66,18 @@ declare class Size extends Subscribe {
      */
     greaterThan(against: SIZE): boolean;
     /**
+     * Greater Than or Equal
+     *
+     * Calls the module's `greaterThanOrEqual` method with the current size and
+     * the `against` param.
+     *
+     * @name greaterThanOrEqual
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    greaterThanOrEqual(against: SIZE): boolean;
+    /**
      * Less Than
      *
      * Calls the module's `lessThan` method with the current size and the
@@ -77,6 +89,18 @@ declare class Size extends Subscribe {
      * @returns number
      */
     lessThan(against: SIZE): boolean;
+    /**
+     * Less Than or Equal
+     *
+     * Calls the module's `lessThanOrEqual` method with the current size and
+     * the `against` param.
+     *
+     * @name lessThanOrEqual
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    lessThanOrEqual(against: SIZE): boolean;
     /**
      * Subscribe
      *
@@ -128,6 +152,18 @@ export declare function compare(a: SIZE, b: SIZE): 0 | 1 | -1;
  */
 export declare function greaterThan(a: SIZE, b: SIZE): boolean;
 /**
+ * Greater Than or Equal
+ *
+ * Returns true only if `a` is a larger or equal width to `b`
+ *
+ * @name greaterThanOrEqual
+ * @access public
+ * @param a The size to compare as greater than or equal to `b`
+ * @param b The size to compare against `a`
+ * @returns boolean
+ */
+export declare function greaterThanOrEqual(a: SIZE, b: SIZE): boolean;
+/**
  * Less Than
  *
  * Returns true only if `a` is a smaller width than `b`
@@ -139,3 +175,15 @@ export declare function greaterThan(a: SIZE, b: SIZE): boolean;
  * @returns boolean
  */
 export declare function lessThan(a: SIZE, b: SIZE): boolean;
+/**
+ * Less Than or Equal
+ *
+ * Returns true only if `a` is a smaller or equal width to `b`
+ *
+ * @name lessThanOrEqual
+ * @access public
+ * @param a The size to compare as less than or equal to `b`
+ * @param b The size to compare against `a`
+ * @returns boolean
+ */
+export declare function lessThanOrEqual(a: SIZE, b: SIZE): boolean;
