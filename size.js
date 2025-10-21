@@ -111,6 +111,20 @@ class Size extends Subscribe {
         return greaterThan(this.subscribeData, against);
     }
     /**
+     * Greater Than or Equal
+     *
+     * Calls the module's `greaterThanOrEqual` method with the current size and
+     * the `against` param.
+     *
+     * @name greaterThanOrEqual
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    greaterThanOrEqual(against) {
+        return greaterThanOrEqual(this.subscribeData, against);
+    }
+    /**
      * Less Than
      *
      * Calls the module's `lessThan` method with the current size and the
@@ -123,6 +137,20 @@ class Size extends Subscribe {
      */
     lessThan(against) {
         return lessThan(this.subscribeData, against);
+    }
+    /**
+     * Less Than or Equal
+     *
+     * Calls the module's `lessThanOrEqual` method with the current size and
+     * the `against` param.
+     *
+     * @name lessThanOrEqual
+     * @access public
+     * @param against The size to compare the current size against
+     * @returns number
+     */
+    lessThanOrEqual(against) {
+        return lessThanOrEqual(this.subscribeData, against);
     }
     /**
      * Subscribe
@@ -203,8 +231,23 @@ export function compare(a, b) {
  * @returns boolean
  */
 export function greaterThan(a, b) {
-    // If the current value is greater than the passed value
+    // If the `a` value is greater than the `b` value
     return SIZES[a] > SIZES[b];
+}
+/**
+ * Greater Than or Equal
+ *
+ * Returns true only if `a` is a larger or equal width to `b`
+ *
+ * @name greaterThanOrEqual
+ * @access public
+ * @param a The size to compare as greater than or equal to `b`
+ * @param b The size to compare against `a`
+ * @returns boolean
+ */
+export function greaterThanOrEqual(a, b) {
+    // If the `a` value is greater than or equal to the `b` value
+    return SIZES[a] >= SIZES[b];
 }
 /**
  * Less Than
@@ -218,6 +261,21 @@ export function greaterThan(a, b) {
  * @returns boolean
  */
 export function lessThan(a, b) {
-    // If the `a` minimum value is less than the `b` minimum value
+    // If the `a` value is less than the `b` value
     return SIZES[a] < SIZES[b];
+}
+/**
+ * Less Than or Equal
+ *
+ * Returns true only if `a` is a smaller or equal width to `b`
+ *
+ * @name lessThanOrEqual
+ * @access public
+ * @param a The size to compare as less than or equal to `b`
+ * @param b The size to compare against `a`
+ * @returns boolean
+ */
+export function lessThanOrEqual(a, b) {
+    // If the `a` value is less than or equal to the `b` value
+    return SIZES[a] <= SIZES[b];
 }
