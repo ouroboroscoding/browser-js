@@ -17,6 +17,7 @@ import Subscribe, { SubscribeCallback, SubscribeReturn } from '@ouroboros/subscr
  * @extends Subscribe
  */
 declare class PageVisibility extends Subscribe {
+    #private;
     /**
      * Constructor
      *
@@ -27,6 +28,17 @@ declare class PageVisibility extends Subscribe {
      * @returns PageVisibility
      */
     constructor();
+    /**
+     * Set
+     *
+     * Overrides Subscribe.set to make sure no one can call it without a failure
+     *
+     * @name set
+     * @access public
+     * @param data The new data to set and then send
+     * @returns void
+     */
+    set(data: any): boolean;
     /**
      * Subscribe
      *
