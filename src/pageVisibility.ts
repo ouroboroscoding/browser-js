@@ -46,24 +46,6 @@ else {
 }
 
 /**
- * Track
- *
- * The actual function passed to the event so that we only have one event
- * listener
- *
- * @name track
- * @access private
- */
-function track(): void {
-
-	// Set the data so the instance notifies subscribers
-	pageVisibility.set({
-		property: document[properties.property as keyof Document],
-		state: document[properties.state as keyof Document]
-	});
-}
-
-/**
  * Page Visibility
  *
  * Extends the Subscribe class to be created once and exported
@@ -92,6 +74,20 @@ class PageVisibility extends Subscribe {
 	}
 
 	/**
+	 * Set
+	 *
+	 * Overrides Subscribe.set to make sure no one can call it without a failure
+	 *
+	 * @name set
+	 * @access public
+	 * @param data The new data to set and then send
+	 * @returns void
+	 */
+	set(data: any): boolean {
+		throw new Error('Calling PageVisibility.set() is forbidden');
+	}
+
+	/**
 	 * Subscribe
 	 *
 	 * Overrides parent subscribe to handle adding the window event
@@ -107,11 +103,29 @@ class PageVisibility extends Subscribe {
 		if(apiAvailable && this.subscribeCallbacks.length === 0) {
 
 			// Add the event listener
-			document.addEventListener(properties.event, track);
+			document.addEventListener(properties.event, this.#track);
 		}
 
 		// Call the parent subscribe and return
 		return super.subscribe(callback);
+	}
+
+	/**
+	 * Track
+	 *
+	 * The actual function passed to the event so that we only have one event
+	 * listener
+	 *
+	 * @name track
+	 * @access private
+	 */
+	#track = () => {
+
+		// Set the data so the instance notifies subscribers
+		super.set({
+			property: document[properties.property as keyof Document],
+			state: document[properties.state as keyof Document]
+		});
 	}
 
 	/**
@@ -138,7 +152,7 @@ class PageVisibility extends Subscribe {
 		if(bRet && this.subscribeCallbacks.length === 0) {
 
 			// Remove the event listener
-			document.removeEventListener(properties.event, track);
+			document.removeEventListener(properties.event, this.#track);
 		}
 
 		// Return
